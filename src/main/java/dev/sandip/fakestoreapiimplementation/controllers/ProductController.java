@@ -2,12 +2,11 @@ package dev.sandip.fakestoreapiimplementation.controllers;
 
 import dev.sandip.fakestoreapiimplementation.Exceptions.ProductNotFoundException;
 import dev.sandip.fakestoreapiimplementation.Exceptions.ProductNotFoundForDeletionException;
-import dev.sandip.fakestoreapiimplementation.dtos.ReplaceProductDto;
-import dev.sandip.fakestoreapiimplementation.dtos.UpdateProductDto;
-import dev.sandip.fakestoreapiimplementation.dtos.createNewProductDto;
+import dev.sandip.fakestoreapiimplementation.DTOs.ReplaceProductDTO;
+import dev.sandip.fakestoreapiimplementation.DTOs.UpdateProductDTO;
+import dev.sandip.fakestoreapiimplementation.DTOs.createNewProductDto;
 import dev.sandip.fakestoreapiimplementation.models.Category;
 import dev.sandip.fakestoreapiimplementation.models.Product;
-import dev.sandip.fakestoreapiimplementation.services.FakeStoreProductService;
 import dev.sandip.fakestoreapiimplementation.services.ProductService;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
@@ -51,7 +50,7 @@ public class ProductController {
          return productService.getAllProductsByCategory(category);
     }
     @PutMapping("/products/{id}")
-    public Product updateProduct(@PathVariable("id") Long id, @RequestBody UpdateProductDto request){
+    public Product updateProduct(@PathVariable("id") Long id, @RequestBody UpdateProductDTO request){
          return productService.updateProduct(
                  id,
                  request.getTitle(),
@@ -62,7 +61,7 @@ public class ProductController {
          );
     }
     @PatchMapping("/products/{id}")
-    public  Product replaceProduct(@PathVariable("id") Long id, @RequestBody ReplaceProductDto request) throws ProductNotFoundException{
+    public  Product replaceProduct(@PathVariable("id") Long id, @RequestBody ReplaceProductDTO request) throws ProductNotFoundException{
          return productService.replaceProduct(
                  id,
                  request.getTitle(),

@@ -2,8 +2,8 @@ package dev.sandip.fakestoreapiimplementation.services;
 
 import dev.sandip.fakestoreapiimplementation.Exceptions.ProductNotFoundException;
 import dev.sandip.fakestoreapiimplementation.Exceptions.ProductNotFoundForDeletionException;
-import dev.sandip.fakestoreapiimplementation.dtos.FakeStoreCategoryDto;
-import dev.sandip.fakestoreapiimplementation.dtos.FakeStoreProductDto;
+import dev.sandip.fakestoreapiimplementation.DTOs.FakeStoreCategoryDTO;
+import dev.sandip.fakestoreapiimplementation.DTOs.FakeStoreProductDTO;
 import dev.sandip.fakestoreapiimplementation.models.Category;
 import dev.sandip.fakestoreapiimplementation.models.Product;
 import org.springframework.core.ParameterizedTypeReference;
@@ -24,8 +24,8 @@ public class FakeStoreProductService implements ProductService{
     }
     @Override
     public Product getSingleProduct(Long productId) throws ProductNotFoundException {
-        ResponseEntity<FakeStoreProductDto> fakeStoreProductResponse = restTemplate.getForEntity("https://fakestoreapi.com/products/" +productId, FakeStoreProductDto.class);
-        FakeStoreProductDto fakeStoreProduct = fakeStoreProductResponse.getBody();
+        ResponseEntity<FakeStoreProductDTO> fakeStoreProductResponse = restTemplate.getForEntity("https://fakestoreapi.com/products/" +productId, FakeStoreProductDTO.class);
+        FakeStoreProductDTO fakeStoreProduct = fakeStoreProductResponse.getBody();
         if(fakeStoreProduct == null){
             throw new ProductNotFoundException("The product with id "+productId+" does not exist. Please try with a different Product_ID");
         }
@@ -34,9 +34,9 @@ public class FakeStoreProductService implements ProductService{
 
     @Override
     public List<Product> getAllProducts() {
-        FakeStoreProductDto[] fakeStoreProductDtos = restTemplate.getForObject("https://fakestoreapi.com/products", FakeStoreProductDto[].class);
+        FakeStoreProductDTO[] fakeStoreProductDtos = restTemplate.getForObject("https://fakestoreapi.com/products", FakeStoreProductDTO[].class);
         List<Product> finalList = new ArrayList<>();
-        for(FakeStoreProductDto i : fakeStoreProductDtos){
+        for(FakeStoreProductDTO i : fakeStoreProductDtos){
             finalList.add(i.makeProduct());
         }
         return finalList;
@@ -44,20 +44,20 @@ public class FakeStoreProductService implements ProductService{
 
     @Override
     public Product createNewProduct(String title, String description, String image, Long price, String category) {
-        FakeStoreProductDto fakeStoreProduct = new FakeStoreProductDto();
+        FakeStoreProductDTO fakeStoreProduct = new FakeStoreProductDTO();
         fakeStoreProduct.setTitle(title);
         fakeStoreProduct.setCategory(category);
         fakeStoreProduct.setImageUrl(image);
         fakeStoreProduct.setDescription(description);
         fakeStoreProduct.setPrice(price);
-        FakeStoreProductDto response = restTemplate.postForObject("https://fakestoreapi.com/products", fakeStoreProduct, FakeStoreProductDto.class);
+        FakeStoreProductDTO response = restTemplate.postForObject("https://fakestoreapi.com/products", fakeStoreProduct, FakeStoreProductDTO.class);
         return response.makeProduct();
     }
 
     @Override
     public Product deleteProduct(Long productId) throws ProductNotFoundForDeletionException {
-        ResponseEntity<FakeStoreProductDto> fakeStoreProductResponse = restTemplate.getForEntity("https://fakestoreapi.com/products/"+productId, FakeStoreProductDto.class);
-        FakeStoreProductDto fakestoreProduct = fakeStoreProductResponse.getBody();
+        ResponseEntity<FakeStoreProductDTO> fakeStoreProductResponse = restTemplate.getForEntity("https://fakestoreapi.com/products/"+productId, FakeStoreProductDTO.class);
+        FakeStoreProductDTO fakestoreProduct = fakeStoreProductResponse.getBody();
         if(fakestoreProduct == null){
             throw new ProductNotFoundForDeletionException("The product with id "+productId+" does not exist. Please try to delete a different product.");
         }
@@ -81,10 +81,10 @@ public class FakeStoreProductService implements ProductService{
     @Override
     public List<Product> getAllProductsByCategory(String category) {
         List<Product> productList = new ArrayList<>();
-        List<FakeStoreProductDto> fakeStoreProductDto = restTemplate.exchange("https://fakestoreapi.com/products/category/"+category, HttpMethod.GET, null, new ParameterizedTypeReference<List<FakeStoreProductDto>>() {
+        List<FakeStoreProductDTO> fakeStoreProductDto = restTemplate.exchange("https://fakestoreapi.com/products/category/"+category, HttpMethod.GET, null, new ParameterizedTypeReference<List<FakeStoreProductDTO>>() {
         }).getBody();
 
-        for(FakeStoreProductDto i : fakeStoreProductDto){
+        for(FakeStoreProductDTO i : fakeStoreProductDto){
             Product tempProduct = new Product();
             Category tempCategory = new Category();
             tempProduct.setId(i.getId());
@@ -101,7 +101,7 @@ public class FakeStoreProductService implements ProductService{
 
     @Override
     public Product updateProduct(Long productId, String title, String description, String image, Long price, String category) {
-       FakeStoreProductDto newFakeStoreProduct = new FakeStoreProductDto();
+       FakeStoreProductDTO newFakeStoreProduct = new FakeStoreProductDTO();
        newFakeStoreProduct.setId(productId);
        newFakeStoreProduct.setTitle(title);
        newFakeStoreProduct.setDescription(description);
@@ -109,17 +109,17 @@ public class FakeStoreProductService implements ProductService{
        newFakeStoreProduct.setPrice(price);
        newFakeStoreProduct.setCategory(category);
 
-       restTemplate.put("https://fakestoreapi.com/products/"+productId, newFakeStoreProduct, FakeStoreCategoryDto.class);
+       restTemplate.put("https://fakestoreapi.com/products/"+productId, newFakeStoreProduct, FakeStoreCategoryDTO.class);
        return newFakeStoreProduct.makeProduct();
     }
     @Override
     public Product replaceProduct(Long productId, String title, String description, String image, Long price, String category) throws ProductNotFoundException {
-        ResponseEntity<FakeStoreProductDto> fakeStoreProductDtoResponse = restTemplate.getForEntity("https://fakestoreapi.com/products/" + productId, FakeStoreProductDto.class);
-        FakeStoreProductDto fakeStoreProduct = fakeStoreProductDtoResponse.getBody();
+        ResponseEntity<FakeStoreProductDTO> fakeStoreProductDtoResponse = restTemplate.getForEntity("https://fakestoreapi.com/products/" + productId, FakeStoreProductDTO.class);
+        FakeStoreProductDTO fakeStoreProduct = fakeStoreProductDtoResponse.getBody();
         if (fakeStoreProduct == null) {
             throw new ProductNotFoundException("The product with id " + productId + " does not exist. Please try with a different Product_ID");
         }
-        FakeStoreProductDto updatedProduct = fakeStoreProduct;
+        FakeStoreProductDTO updatedProduct = fakeStoreProduct;
         updatedProduct.setId(productId);
         if (title != null) {
             updatedProduct.setTitle(title);
@@ -138,7 +138,7 @@ public class FakeStoreProductService implements ProductService{
             updatedProduct.setCategory(category);
         }
         HttpEntity entityForExchange = new HttpEntity(updatedProduct);
-        FakeStoreProductDto response = restTemplate.exchange("https://fakestoreapi.com/products/" + productId, HttpMethod.PUT, entityForExchange, FakeStoreProductDto.class).getBody();
+        FakeStoreProductDTO response = restTemplate.exchange("https://fakestoreapi.com/products/" + productId, HttpMethod.PUT, entityForExchange, FakeStoreProductDTO.class).getBody();
         return response.makeProduct();
     }
 }
