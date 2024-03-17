@@ -12,21 +12,21 @@ public class FakeStoreProductDto {
     private String title;
     private String description;
     private String category;
-    private Double price;
-    private String image;
+    private Long price;
+    private String imageUrl;
 
-    public Product toProduct(){
-        Product product = new Product();
-        product.setId(id);
-        product.setTitle(title);
-        product.setDescription(description);
-        product.setPrice(price);
-        product.setImageUrl(image);
+    public Product makeProduct(){
+        Product newProduct = new Product();
+        newProduct.setId(id);
+        newProduct.setTitle(title);
+        newProduct.setDescription(description);
+        newProduct.setPrice(price);
+        newProduct.setImageUrl(imageUrl);
 
-        Category pCategory = new Category();
-        pCategory.setTitle(category);
+        Category tempCategory = new Category();
+        tempCategory.setTitle(category);
 
-        product.setProductCategory(pCategory);
-        return product;
+        newProduct.setProductCategory(tempCategory);
+        return newProduct;
     }
 }
